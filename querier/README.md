@@ -1,13 +1,6 @@
 # CS50 TSE Querier
 ## README Spec
 
-####################
-##                ##
-## Extension Used ##
-##                ##
-####################
-
-
 ## Functionality Note
 
 The Querier module contains `querier.c` which fulfills all requirment specs as well as testing requirments with `testing.sh`.
