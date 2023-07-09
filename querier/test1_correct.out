@@ -1,0 +1,48 @@
+ERROR: 'or' cannot be first
+ERROR: 'or' cannot be last
+ERROR: 'and' cannot be first
+ERROR: 'and' cannot be last
+ERROR: 'or' and 'and' cannot be adjacent
+ERROR: 'and' and 'and' cannot be adjacent
+ERROR: 'or' and 'or' cannot be adjacent
+
+ERROR: bad character '!' in query
+
+ERROR: bad character '(' in query
+
+Query: missing
+No documents match.
+-----------------------------------------------
+Query: first
+Score:	1	DocID:	8	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+
+Score:	1	DocID:	3	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+-----------------------------------------------
+Query: computational biology home
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+-----------------------------------------------
+Query: home and biology and computational
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+-----------------------------------------------
+Query: home and for or first or huffman
+Score:	2	DocID:	8	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+
+Score:	2	DocID:	6	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+
+Score:	2	DocID:	3	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+
+Score:	1	DocID:	7	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+
+Score:	1	DocID:	5	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+
+Score:	1	DocID:	4	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+
+Score:	1	DocID:	2	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+
+Score:	1	DocID:	1	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+-----------------------------------------------
+Query: computational or computational
+Score:	2	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+-----------------------------------------------

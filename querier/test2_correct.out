@@ -1,0 +1,53 @@
+
+Query: eniac and computational
+No documents match.
+-----------------------------------------------
+Query: for or breadth breadth or tse the
+Score:	2	DocID:	3	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+
+Score:	2	DocID:	1	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+
+Score:	1	DocID:	8	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+
+Score:	1	DocID:	7	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+
+Score:	1	DocID:	6	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+
+Score:	1	DocID:	5	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+
+Score:	1	DocID:	4	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+
+Score:	1	DocID:	2	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+-----------------------------------------------
+Query: huffman first or the
+Score:	1	DocID:	1	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+-----------------------------------------------
+Query: endlessly fast depth or the or curdled or algorithm
+Score:	1	DocID:	2	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+
+Score:	1	DocID:	1	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+-----------------------------------------------
+Query: graph or page search breadth and coding or fast
+Score:	1	DocID:	7	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+
+Score:	1	DocID:	5	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+-----------------------------------------------
+Query: computational the first page or breadth
+Score:	1	DocID:	3	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+-----------------------------------------------
+Query: algorithm
+Score:	1	DocID:	2	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+-----------------------------------------------
+Query: depth breadth or algorithm
+Score:	1	DocID:	2	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+-----------------------------------------------
+Query: coding
+Score:	1	DocID:	6	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+-----------------------------------------------
+Query: traversal or biology or this and fourier and traversal
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+
+Score:	1	DocID:	5	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+-----------------------------------------------

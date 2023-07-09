@@ -1,0 +1,203 @@
+ml () {  module ml "$@"
+}
+module () {  _module_raw "$@" 2>&1
+}
+_module_raw () {  eval `/usr/bin/tclsh8.6 /usr/lib/x86_64-linux-gnu/modulecmd.tcl bash "$@"`;
+ _mlstatus=$?;
+ return $_mlstatus
+}
+#!/bin/bash
+# testing.sh    Kyrylo Bakuemnko    12 May, 2023
+# 
+# this file tests the functionality of the TSE's querier
+# with various valid and invalid test cases
+
+### Test indexer with various invalid arguments ###
+echo -e "\n### testing with various arguments ###"
+
+### testing with various arguments ###
+
+# no arguments
+echo -e "\ntesting with no arguments"
+
+testing with no arguments
+./querier
+ERROR: Expected 2 arguments but recieved 0
+
+# one argument
+echo -e "\ntesting with one argument"
+
+testing with one argument
+./querier ../data/letters-10
+ERROR: Expected 2 arguments but recieved 1
+
+# three or more arguments
+echo -e "\ntesting with three or more arguments"
+
+testing with three or more arguments
+./querier ../data/letters-10 arg2 arg3
+ERROR: Expected 2 arguments but recieved 3
+./querier ../data/letters-10 arg2 arg3 arg4 arg5 a r g 6
+ERROR: Expected 2 arguments but recieved 9
+
+# invalid pageDirectory
+echo -e "\ntesting with invalid pageDirectory (non-existent path)"
+
+testing with invalid pageDirectory (non-existent path)
+./querier ../data/letters-100 ../data/letters-1/index.ndx
+ERROR: directory ../data/letters-100 does not exist!
+
+# pageDirectory not a crawler directory
+echo -e "\ntesting with invalid pageDirectory (not a crawler directory)"
+
+testing with invalid pageDirectory (not a crawler directory)
+mkdir ../data/not_crawler
+touch ../data/not_crawler/not_crawled.txt
+./querier ../data/not_crawler ../data/not_crawler/index.ndx
+ERROR: .crawler not in ../data/not_crawler directory!
+# check if extra file created
+FILE=../data/not_crawler/index.ndx
+if [[ -f "$FILE" ]]; then
+    echo -e "\nERROR: $FILE created"
+fi
+# cleanup directory
+rm -r ../data/not_crawler
+
+# invalid indexFile (non-existent path)
+echo -e "\ntesting with invalid indexFile (non-existent path)"
+
+testing with invalid indexFile (non-existent path)
+./querier ../data/letters-10 ../data/letters-100/index.ndx
+ERROR: Cannot open file ../data/letters-100/index.ndx
+
+### Test indexer on several valid pageDirectories, validated by previously verified run by hand ###
+pdir="../data/letters-10"
+indx="../data/letters-10/index.ndx"
+# test1_correct.out was manually verified to contian correct behaviour
+echo -e "\ntesting on pageDirectory: $pdir"
+
+testing on pageDirectory: ../data/letters-10
+touch test1.out
+./querier $pdir $indx < test1 >& test1.out
+var="$(diff test1.out test1_correct.out)"
+if [ -z "$var" ]
+then
+      echo -e "\noutput matches!"
+else
+      echo -e "\nOUTPUT DOES NOT MATCH"
+fi
+
+output matches!
+# cleanup files
+rm test1.out
+
+# test2_correct.out was manually verified to contian correct behaviour
+echo -e "\ntesting on pageDirectory: $pdir with fuzzyquery"
+
+testing on pageDirectory: ../data/letters-10 with fuzzyquery
+touch test2.out
+./fuzzquery $indx 10 0 | ./querier $pdir $indx >& test2.out
+./fuzzquery: generating 10 queries from 22 words
+var="$(diff test2.out test2_correct.out)"
+if [ -z "$var" ]
+then
+      echo -e "\noutput matches!"
+else
+      echo -e "\nOUTPUT DOES NOT MATCH"
+fi
+
+output matches!
+# cleanup files
+rm test2.out
+
+pdir="../data/toscrape-2"
+indx="../data/toscrape-2/index.ndx"
+# test3_correct.out was manually verified to contian correct behaviour
+echo -e "\ntesting on pageDirectory: $pdir with fuzzyquery"
+
+testing on pageDirectory: ../data/toscrape-2 with fuzzyquery
+touch test3.out
+./fuzzquery $indx 10 0 | ./querier $pdir $indx >& test3.out
+./fuzzquery: generating 10 queries from 13563 words
+var="$(diff test3.out test3_correct.out)"
+if [ -z "$var" ]
+then
+      echo -e "\noutput matches!"
+else
+      echo -e "\nOUTPUT DOES NOT MATCH"
+fi
+
+output matches!
+# cleanup files
+rm test3.out
+
+# ### Run valgrind on both indexer and indextest to ensure no memory leaks or errors ###
+echo -e "\nrunning valgrind in indexer to check for memory leaks"
+
+running valgrind in indexer to check for memory leaks
+valgrind --leak-check=full --show-leak-kinds=all -s ./querier ../data/letters-10 ../data/letters-10/index.ndx < test1
+==3753849== Memcheck, a memory error detector
+==3753849== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3753849== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==3753849== Command: ./querier ../data/letters-10 ../data/letters-10/index.ndx
+==3753849== 
+ERROR: 'or' cannot be first
+ERROR: 'or' cannot be last
+ERROR: 'and' cannot be first
+ERROR: 'and' cannot be last
+ERROR: 'or' and 'and' cannot be adjacent
+ERROR: 'and' and 'and' cannot be adjacent
+ERROR: 'or' and 'or' cannot be adjacent
+
+ERROR: bad character '!' in query
+
+ERROR: bad character '(' in query
+
+Query: missing
+No documents match.
+-----------------------------------------------
+Query: first
+Score:	1	DocID:	8	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+
+Score:	1	DocID:	3	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+-----------------------------------------------
+Query: computational biology home
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+-----------------------------------------------
+Query: home and biology and computational
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+-----------------------------------------------
+Query: home and for or first or huffman
+Score:	2	DocID:	8	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+
+Score:	2	DocID:	6	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+
+Score:	2	DocID:	3	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+
+Score:	1	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+
+Score:	1	DocID:	7	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+
+Score:	1	DocID:	5	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+
+Score:	1	DocID:	4	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+
+Score:	1	DocID:	2	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+
+Score:	1	DocID:	1	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+-----------------------------------------------
+Query: computational or computational
+Score:	2	DocID:	9	URL:	http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+-----------------------------------------------
+==3753849== 
+==3753849== HEAP SUMMARY:
+==3753849==     in use at exit: 0 bytes in 0 blocks
+==3753849==   total heap usage: 255 allocs, 255 frees, 1,215,958 bytes allocated
+==3753849== 
+==3753849== All heap blocks were freed -- no leaks are possible
+==3753849== 
+==3753849== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+
+
