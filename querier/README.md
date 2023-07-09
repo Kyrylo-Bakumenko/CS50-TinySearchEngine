@@ -3,11 +3,11 @@
 
 ## Functionality Note
 
-The Querier module contains `querier.c` which fulfills all requirment specs as well as testing requirments with `testing.sh`.
+The Querier module contains `querier.c` which fulfills all requirement specs as well as testing requirements with `testing.sh`.
 
 ## Instructions
 
-In this lab you'll continue the Tiny Search Engine (TSE) by coding the Querier according to the [Requirements Spec](REQUIREMENTS.md).
+In this lab, you'll continue the Tiny Search Engine (TSE) by coding the Querier according to the [Requirements Spec](REQUIREMENTS.md).
 
 You will also write the Design Spec and Implementation Spec.
 
@@ -22,7 +22,7 @@ Write solid unit tests, test drivers, and use regression testing as your develop
 If your submitted version has *known bugs*, that is, cases where it fails your own test cases, *and you describe those cases in your README file*, we will halve the number of points you lose for those cases.
 In short, it is far better for you to demonstrate you *know* about the bug than to submit and hope we won't find it.
 
-***Valgrind should report no memory errors or memory leaks, when crawler exits normally.***
+***Valgrind should report no memory errors or memory leaks when crawler exits normally.***
 You will lose points for memory errors and leaks reported by valgrind on our tests.
 
 
@@ -49,10 +49,10 @@ Your design and implementation must follow the **Querier Requirements Spec** (ak
 **In the `querier` subdirectory,**
 
 1. Add a file `DESIGN.md` to provide the Design Spec for querier.
-  Your `DESIGN.md` file should not repeat the information provided in the assignment or in the [Requirements Spec](REQUIREMENTS.md); instead, it should describe the abstract data structures and pseudo code for *your* querier.
+  Your `DESIGN.md` file should not repeat the information provided in the assignment or in the [Requirements Spec](REQUIREMENTS.md); instead, it should describe the abstract data structures and pseudo-code for *your* querier.
 1. Add a file `IMPLEMENTATION.md` to provide the implementation spec and testing plan for querier.
   Your `IMPLEMENTATION.md` file need not repeat the information provided in the assignment or other specs; instead, it should describe implementation details specific to *your* implementation.
-1. Add a file `README.md` to describe any assumptions you made while writing the querier, any ways in which your implementation differs from the Specs, or any ways in which you know your implementation fails to work.
+1. Add a file `README.md` to describe any assumptions you made while writing the querier, any ways in which your implementation differs from the Specs or any ways in which you know your implementation fails to work.
 1. Extend the `README.md` file to clearly **indicate how much of the functionality you implemented**, as [described below](#grading).
 1. Write a program `querier.c` according to the Specs.
    Your program should make good use of code from `common.a` and `libcs50.a`, created in earlier labs.
@@ -67,7 +67,7 @@ Your design and implementation must follow the **Querier Requirements Spec** (ak
 
 ### Submission
 
-Add/commit all the code and ancillary files required to build and test your solution; at a minimum your **querier** directory should include the following files:
+Add/commit all the code and ancillary files required to build and test your solution; at a minimum, your **querier** directory should include the following files:
 `.gitignore README.md DESIGN.md IMPLEMENTATION.md Makefile querier.c testing.sh testing.out`
 and your **common** directory should contain the following files:
 `Makefile index.h index.c pagedir.h pagedir.c word.h word.c`
@@ -80,7 +80,7 @@ See the [Lab submission instructions](https://github.com/CS50spring2023/home/blo
 
 ## Grading
 
-Lab 6 is scored on the basis of 100 points, with Delivery, Documentation, Style, Testing comprising most of the points.
+Lab 6 is scored on the basis of 100 points, with Delivery, Documentation, Style, and Testing comprising most of the points.
 
 "Functionality" represents 30/100 points.
 In recognition that you might find it best to start simple and slowly enhance your solution as you get the simpler version working, you can earn points on a sliding scale as follows:
@@ -90,20 +90,20 @@ In recognition that you might find it best to start simple and slowly enhance yo
  * 25 points if your querier also supports 'and' precedence over 'or'.
  * 30 points if your querier also prints the document set in decreasing order by score, thus meeting the full specs.
 
-Partial credit is available, of course, per the judgement of the grader, but above is the coarse-grain rubric.
+Partial credit is available, of course, per the judgment of the grader, but above is the coarse-grain rubric.
 
 **Please indicate in your `querier/README.md` which of the above subsets of functionality you implemented.**
 
 ## Hints and tips
 
-There are some examples and design tips in the [unit about querier](https://github.com/CS50spring2023/home/blob/main/knowledge/units/querier.md), and following units.
+There are some examples and design tips in the [unit about querier](https://github.com/CS50spring2023/home/blob/main/knowledge/units/querier.md), and the following units.
 
 Many of the [Lab4 hints](../crawler/README.md) and
 [Lab5 hints](../indexer/README.md) are still relevant.
 
 Processing a query and ranking the results are tricky.
-We encourage you to start with a simplified case, test it thoroughly, then enhance.
-Easier to code, to test, and to debug, and when facing a deadline it's nice to have a less-functional program that works than a full-functional program that doesn't work.
+We encourage you to start with a simplified case, test it thoroughly, then enhance it.
+Easier to code, test, and debug, and when facing a deadline it's nice to have a less-functional program that works than a full-functional program that doesn't work.
 See the section on [Grading](#grading) regarding the points allocated as you achieve higher levels of functionality.
 
 ### Hashtable
@@ -121,13 +121,13 @@ See a [unit](https://github.com/CS50spring2023/home/blob/main/knowledge/units/qu
 
 > Note: from painful experience, we specifically recommend you avoid `strtok` and related functions.
 
-Now that all the character-by-character parsing is behind you, and you have an array of words, you can step through the array to print a *clean query*, that is, with no extraneous spaces and all letters in lower case.
+Now that all the character-by-character parsing is behind you, and you have an array of words, you can step through the array to print a *clean query*, that is, with no extraneous spaces and all letters in lowercase.
 
 You can then step through the array according to the structure defined in the BNF.
 Two tips:
 
- * Validate the basic structure: neither the first or last word may be an operator, and two operators may not be adjacent.
-If valid, proceed to next step; otherwise print a suitable error message.
+ * Validate the basic structure: neither the first nor last word may be an operator, and two operators may not be adjacent.
+If valid, proceed to the next step; otherwise, print a suitable error message.
  * Structure your code to follow the structure of the grammar, which has two non-terminals (`query` and `andsequence`): an inner loop over words in the `andsequence`, accumulating an answer (like a running product) as you go, and stopping when you reach `or` or the end of the array; an outer loop over a sequence of `andsequence` separated by `or`; accumulate an answer (like a running total) as you go.
 
 Read the [unit about parsing expressions](https://github.com/CS50spring2023/home/blob/main/knowledge/units/querier-expressions.md) for more hints about how this might work.
