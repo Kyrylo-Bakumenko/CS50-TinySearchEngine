@@ -1,0 +1,189 @@
+ml () {  module ml "$@"
+}
+module () {  _module_raw "$@" 2>&1
+}
+_module_raw () {  eval `/usr/bin/tclsh8.6 /usr/lib/x86_64-linux-gnu/modulecmd.tcl bash "$@"`;
+ _mlstatus=$?;
+ return $_mlstatus
+}
+#!/bin/bash
+# testing.sh    Kyrylo Bakuemnko    4 May, 2023
+# 
+# this file tests the functionality of the TSE's indexer
+# with various valid and invalid test cases
+
+### Test indexer with various invalid arguments ###
+echo -e "\n### testing with various arguments ###"
+
+### testing with various arguments ###
+
+# no arguments
+echo -e "\ntesting with no arguments"
+
+testing with no arguments
+./indexer
+ERROR: Expected 2 arguments but recieved 0
+
+# one argument
+echo -e "\ntesting with one argument"
+
+testing with one argument
+./indexer ../data/letters-1
+ERROR: Expected 2 arguments but recieved 1
+
+# three or more arguments
+echo -e "\ntesting with three or more arguments"
+
+testing with three or more arguments
+./indexer ../data/letters-1 arg2 arg3
+ERROR: Expected 2 arguments but recieved 3
+./indexer ../data/letters-1 arg2 arg3 arg4 arg5 a r g 6
+ERROR: Expected 2 arguments but recieved 9
+
+# invalid pageDirectory
+echo -e "\ntesting with invalid pageDirectory (non-existent path)"
+
+testing with invalid pageDirectory (non-existent path)
+./indexer ../data/letters-100 ../data/letters-1/index.ndx
+ERROR: Crawler directory ../data/letters-100 not found!
+echo -e "\ntesting with invalid pageDirectory (not a crawler directory)"
+
+testing with invalid pageDirectory (not a crawler directory)
+mkdir ../data/not_crawler
+touch ../data/not_crawler/not_crawled.txt
+./indexer ../data/not_crawler ../data/not_crawler/index.ndx
+ERROR: Crawler directory ../data/not_crawler not found!
+# check if extra file created
+FILE=../data/not_crawler/index.ndx
+if [[ -f "$FILE" ]]; then
+    echo -e "\nERROR: $FILE created"
+fi
+# cleanup directory
+rm -r ../data/not_crawler
+
+# invalid indexFile (non-existent path)
+echo -e "\ntesting with invalid indexFile (non-existent path)"
+
+testing with invalid indexFile (non-existent path)
+./indexer ../data/letters-1 ../data/letters-100/index.ndx
+ERROR: Cannot write to ../data/letters-100/index.ndx
+
+# invalid indexFile (read-only directory)
+echo -e "\ntesting with invalid indexFile (read-only directory)"
+
+testing with invalid indexFile (read-only directory)
+chmod -w ../data/letters-1 
+chmod: ../data/letters-1: new permissions are r-xrwsrwx, not r-xr-sr-x
+./indexer ../data/letters-1 ../data/letters-1/index.ndx
+ERROR: Cannot write to ../data/letters-1/index.ndx
+# reset permissions
+chmod +w ../data/letters-1
+
+# invalid indexFile (existing, read-only file)
+echo -e "\ntesting with invalid indexFile (existing, read-only file)"
+
+testing with invalid indexFile (existing, read-only file)
+touch ../data/letters-1/index.ndx
+chmod -w ../data/letters-1/index.ndx
+./indexer ../data/letters-1 ../data/letters-1/index.ndx
+ERROR: Cannot write to ../data/letters-1/index.ndx
+# reset permissions
+chmod +w ../data/letters-1/index.ndx
+rm ../data/letters-1/index.ndx
+
+### Test indexer ons everal valid pageDirectories, validated by indextest ###
+echo -e "\ntesting on pageDirectory ../data/letters-1 ..."
+
+testing on pageDirectory ../data/letters-1 ...
+./indexer ../data/letters-1 ../data/letters-1/index.ndx
+./indextest ../data/letters-1/index.ndx ../data/letters-1/index_new.ndx
+var="$(diff <(sort ../data/letters-1/index.ndx) <(sort ../data/letters-1/index_new.ndx))"
+if [ -z "$var" ]
+then
+      echo -e "\noutput matches!"
+else
+      echo -e "\nOUTPUT DOES NOT MATCH"
+fi
+
+output matches!
+# cleanup
+rm ../data/letters-1/index.ndx ../data/letters-1/index_new.ndx
+
+echo -e "\ntesting on pageDirectory ../data/letters-2 ..."
+
+testing on pageDirectory ../data/letters-2 ...
+./indexer ../data/letters-2 ../data/letters-2/index.ndx
+./indextest ../data/letters-2/index.ndx ../data/letters-2/index_new.ndx
+var="$(diff <(sort ../data/letters-2/index.ndx) <(sort ../data/letters-2/index_new.ndx))"
+if [ -z "$var" ]
+then
+      echo -e "\noutput matches!"
+else
+      echo -e "\nOUTPUT DOES NOT MATCH"
+fi
+
+output matches!
+# cleanup
+rm ../data/letters-2/index.ndx ../data/letters-2/index_new.ndx
+
+echo -e "\ntesting on pageDirectory ../data/letters-3 ..."
+
+testing on pageDirectory ../data/letters-3 ...
+./indexer ../data/letters-3 ../data/letters-3/index.ndx
+./indextest ../data/letters-3/index.ndx ../data/letters-3/index_new.ndx
+var="$(diff <(sort ../data/letters-3/index.ndx) <(sort ../data/letters-3/index_new.ndx))"
+if [ -z "$var" ]
+then
+      echo -e "\noutput matches!"
+else
+      echo -e "\nOUTPUT DOES NOT MATCH"
+fi
+
+output matches!
+# cleanup
+rm ../data/letters-3/index.ndx ../data/letters-3/index_new.ndx
+
+### Run valgrind on both indexer and indextest to ensure no memory leaks or errors ###
+echo -e "\nrunning valgrind in indexer to check for memory leaks"
+
+running valgrind in indexer to check for memory leaks
+valgrind --leak-check=full --show-leak-kinds=all -s ./indexer ../data/letters-1 ../data/letters-1/index.ndx
+==136614== Memcheck, a memory error detector
+==136614== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==136614== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==136614== Command: ./indexer ../data/letters-1 ../data/letters-1/index.ndx
+==136614== 
+==136614== 
+==136614== HEAP SUMMARY:
+==136614==     in use at exit: 0 bytes in 0 blocks
+==136614==   total heap usage: 288 allocs, 288 frees, 32,614 bytes allocated
+==136614== 
+==136614== All heap blocks were freed -- no leaks are possible
+==136614== 
+==136614== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+echo -e "\nrunning valgrind in indextest to check for memory leaks"
+
+running valgrind in indextest to check for memory leaks
+valgrind --leak-check=full --show-leak-kinds=all -s ./indextest ../data/letters-1/index.ndx ../data/letters-1/index_new.ndx
+==136627== Memcheck, a memory error detector
+==136627== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==136627== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==136627== Command: ./indextest ../data/letters-1/index.ndx ../data/letters-1/index_new.ndx
+==136627== 
+==136627== 
+==136627== HEAP SUMMARY:
+==136627==     in use at exit: 0 bytes in 0 blocks
+==136627==   total heap usage: 60 allocs, 60 frees, 27,337 bytes allocated
+==136627== 
+==136627== All heap blocks were freed -- no leaks are possible
+==136627== 
+==136627== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+# cleanup
+rm ../data/letters-1/index.ndx ../data/letters-1/index_new.ndx
+
+
+
+
+
